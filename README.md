@@ -1,26 +1,25 @@
-# WGamemode 2
+# WGamemode 3
 
-[![Codacy Badge](https://img.shields.io/codacy/0b0f3d64549a41a2a2c2373a9a24eb45.svg?style=flat-square)](https://www.codacy.com/public/soren121/wgamemode)
-[![Github Downloads](https://img.shields.io/github/downloads/soren121/wgamemode/total.svg?style=flat-square)](https://github.com/soren121/wgamemode/releases)
-
-This is a plugin for the [Spigot MC server](https://www.spigotmc.org/) (1.8+) 
-that allows server admins to set automatic gamemode rules for WorldGuard regions. 
+A spigot plugin that allows server admins to set automatic gamemode rules for WorldGuard regions. 
 
 When a player enters a WGamemode-managed region, their gamemode will be automatically 
 updated to the region's set gamemode, and when they leave, they will return to their 
 original gamemode.
 
-This is a rewritten implementation of the 
-[WGamemode plugin](http://dev.bukkit.org/bukkit-plugins/wgamemode/) written by Sinnoh, 
-who appears to have left the MC scene in 2012.
+This is an evolution of the original [WGamemode plugin](http://dev.bukkit.org/bukkit-plugins/wgamemode/) written by Sinnoh in 2012.
+
+It was later updated by [soren121](https://github.com/soren121/wgamemode) in 2015.
+
+Most recently it was updated by NotAlexNoyle for [TrueOG](https://trueog.net/) in 2023.
+
+Supports: 1.18.2
 
 Licensed under the LGPLv3 (or any later version.) See LICENSE.txt for more information.
 
 ## Usage
 
-This plugin requires that you install WorldEdit 6+ and WorldGuard 6.1+ on your server.  
-The only supported MC server is Spigot 1.8+. Tested with 1.8.8 only, though it should 
-work with earlier 1.8 versions too.
+This plugin requires that you install WorldEdit 7+ and WorldGuard 7+ on your server.  
+The only supported version is 1.18.2. Though it might work with earlier versions too.
 
 **Warning: Adding multiple regions that overlap may result in undesired/undefined 
 behavior.** Do not add a region that overlaps another added region.
@@ -62,16 +61,10 @@ WGamemode has two in-game commands that do what you expect:
  
 ## Building from source
 
-To build this plugin from source, you'll need to install JDK 7+ and Maven 3.0+.
-
-WGamemode uses the standard [Maven lifecycle commands](https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html).
+To build this plugin from source, you'll need to install OpenJDK 17.
 
 #### To compile:  
  
-    $ mvn compile
+    $ gradlew build
     
-#### To build a JAR (for use with Spigot):  
- 
-    $ mvn package
-
-Your JAR file will be in the `target` directory.
+Your JAR file will be in the `build/libs` directory.

@@ -1,10 +1,8 @@
 name: WGamemode
-version: 2.2.0
-authors: [soren121]
-website: https://github.com/soren121/wgamemode
-
+version: 3.0
+authors: [soren121, NotAlexNoyle]
+website: https://github.com/NotAlexNoyle/wgamemode-og
 depend: [WorldGuard, WorldEdit]
-
 main: com.sorenstudios.wgamemode.WGamemode
 
 commands:
