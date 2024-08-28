@@ -1,5 +1,5 @@
 /*
-    WGamemode 3, an automatic gamemode switching plugin for Spigot 1.18
+    WGamemode 3, an automatic gamemode switching plugin for Spigot 1.19
     Updated for https://true-og.net by NotAlexNoyle
     Copyright (C) 2015 Nicholas Narsing <soren121@sorenstudios.com>
 
@@ -17,11 +17,10 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.sorenstudios.wgamemode;
+package net.trueog.plugin;
 
 import java.util.ArrayList;
 
-import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -33,82 +32,107 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 public class GamemodeListener implements Listener {
 
-	private WGamemode plugin;
+	private WGamemodeOG plugin;
 	private ArrayList<Player> enteredRegion = new ArrayList<Player>();
 
-	public GamemodeListener(WGamemode instance) {
+	public GamemodeListener(WGamemodeOG instance) {
+
 		this.plugin = instance;
+
 	}
 
 	@EventHandler
 	public void onPlayerMove(PlayerMoveEvent event) {
+
 		Player player = event.getPlayer();
 
-		// Check if the player is currently in a region we're managing
+		// Check if the player is currently in a region we're managing.
 		String currentRegion = this.plugin.currentRegion(player);
 		if (currentRegion != null) {
-			GameMode regionGamemode = GameMode.valueOf(this.plugin.getConfig().
-					getConfigurationSection("regions").getString(currentRegion).toUpperCase());
+
+			GameMode regionGamemode = GameMode.valueOf(this.plugin.getConfig().getConfigurationSection("regions").getString(currentRegion).toUpperCase());
 
 			// If their gamemode doesn't match the region's gamemode, change it!
 			if (player.getGameMode() != regionGamemode) {
-				// Add player to the list of mutated players
-				if(!this.enteredRegion.contains(player)) {
+
+				// Add the player to the list of mutated players.
+				if(! this.enteredRegion.contains(player)) {
+
 					this.plugin.playersChanged.put(player, player.getGameMode());
+
 				}
 
 				player.setGameMode(regionGamemode);
 
 				if(this.plugin.getConfig().getBoolean("announceGamemodeChange")) {
-					player.sendMessage(ChatColor.YELLOW + "Entering " + 
-							regionGamemode.name().toLowerCase() + " area");
+
+					Utils.trueogMessage(player, ("&eYou are now entering... &2&l" + regionGamemode.name().toLowerCase() + "."));
+
 				}
+
 			}
 
-			// Mark this player as having entered a managed region
+			// Mark this player as having entered a managed region.
 			this.enteredRegion.add(player);
+
 		}
-		// If the user isn't in a region we manage, see if we've updated their status yet
+		// If the user isn't in a region we manage, see if we've updated their status yet.
 		else if (this.plugin.playersChanged.containsKey(player)) {
+
 			if (this.plugin.getConfig().getBoolean("announceGamemodeChange")) {
-				player.sendMessage(ChatColor.YELLOW + "Leaving " + 
-						player.getGameMode().name().toLowerCase() + " area");
+
+				Utils.trueogMessage(player, ("&eYou are now leaving... &2&l" + player.getGameMode().name().toLowerCase() + "."));
+
 			}
 
-			// We haven't, so do that now
+			// We haven't updated the player's status, so do that now.
 			player.setGameMode(this.plugin.playersChanged.get(player));
-			this.plugin.playersChanged.remove(player);
 
+			this.plugin.playersChanged.remove(player);
 			this.enteredRegion.remove(player);
+
 		}
+
 	}
 
 	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent event) {
+
 		Player player = event.getPlayer();
 		if (this.plugin.playersChanged.containsKey(player)) {
+
 			player.setGameMode(this.plugin.playersChanged.get(player));
+
 			this.plugin.playersChanged.remove(player);
+
 		}
+
 	}
 
 	@EventHandler
 	public void onPlayerKick(PlayerKickEvent event) {
+
 		Player player = event.getPlayer();
 		if (this.plugin.playersChanged.containsKey(player)) {
+
 			player.setGameMode(this.plugin.playersChanged.get(player));
+
 			this.plugin.playersChanged.remove(player);
+
 		}
+
 	}
 
 	@EventHandler
 	public void onPlayerItemDrop(PlayerDropItemEvent event) {
+
 		Player player = event.getPlayer();
-		if (this.plugin.getConfig().getBoolean("stopItemDrop") && 
-				this.plugin.playersChanged.containsKey(player)) {
+		if (this.plugin.getConfig().getBoolean("stopItemDrop") && this.plugin.playersChanged.containsKey(player)) {
 
 			event.setCancelled(true);
+
 		}
+
 	}
 
 }

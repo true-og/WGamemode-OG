@@ -17,46 +17,77 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.sorenstudios.wgamemode;
+package net.trueog.plugin;
 
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 
 public class RemoveRegion implements CommandExecutor {
 
-	private WGamemode plugin;
+	private WGamemodeOG plugin;
 
-	public RemoveRegion(WGamemode instance) {
+	public RemoveRegion(WGamemodeOG instance) {
+
 		this.plugin = instance;
+
 	}
 
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		// Verify that argument length is correct
+
+		// If the argument length is correct, do this...
 		if (args.length >= 1) {
+
 			String regionName = args[0];
+
 			ConfigurationSection regions = this.plugin.getConfig().getConfigurationSection("regions");
 
-			// Verify that region is in the config file
+			// Verify that region is in the config file.
 			if (regions != null && regions.isSet(regionName)) {
+
 				regions.set(regionName, null);
+
 				this.plugin.saveConfig();
 
-				sender.sendMessage(ChatColor.DARK_GREEN + 
-						"Removed automatic gamemode rule for region '" + regionName + "'");
+				if (sender instanceof Player) {
+
+					Utils.trueogMessage((Player) sender, "&aRemoved automatic gamemode rule for region &e\"" + regionName + "\"&a.");
+
+				}
+				else {
+
+					WGamemodeOG.getPlugin().getLogger().info("Removed automatic gamemode rule for region \"" + regionName + "\".");
+
+				}
+
 			}
-			else if(!regions.isSet(regionName)) {
-				sender.sendMessage(ChatColor.RED + "That region is not managed by WGamemode.");
+			else if (! regions.isSet(regionName)) {
+
+				if (sender instanceof Player) {
+
+					Utils.trueogMessage((Player) sender, "&cERROR: The region \"&e" + regionName + "\" &cis not managed by WGamemode.");
+
+				}
+				else {
+
+					WGamemodeOG.getPlugin().getLogger().info("ERROR: The region \"" + regionName + "\" is not managed by WGamemode.");
+
+				}
+
 			}
 			else {
-				// Returning false means the command failed unexpectedly
+
+				// Returning false means the command failed unexpectedly.
 				return false;
+
 			}
+
 		}
 
 		return true;
+
 	}
 
 }

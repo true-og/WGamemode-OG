@@ -12,7 +12,7 @@ It was later updated by [soren121](https://github.com/soren121/wgamemode) in 201
 
 Most recently it was updated by NotAlexNoyle for [TrueOG](https://trueog.net/) in 2023.
 
-Supports: 1.18.2
+The current version (3.1) Supports Purpur 1.19.4.
 
 Licensed under the LGPLv3 (or any later version.) See LICENSE.txt for more information.
 
@@ -31,7 +31,7 @@ file, but you can if you want.
 
 This plugin has three settings:
 
- * *regions*: This is an associative array of WorldGuard regions that WGamemode 
+ * *regions*: This is an associative array of WorldGuard regions that WGamemode-OG 
    should manage. The key is the region name, and the value is the gamemode that 
    region should have.
    
@@ -52,12 +52,12 @@ directory when the plugin is run for the first time.
 
 ### Commands
 
-WGamemode has two in-game commands that do what you expect:
+WGamemode-OG has two in-game commands that do what you expect:
 
 | **Command** | **Permission** | **Description** |
 |-----------|------------------|------------------------------------------------|
-| /wgadd [region] [gamemode] | wgamemode.add | Adds a region to WGamemode's region list. |
-| /wgremove [region] | wgamemode.remove | Removes a region from WGamemode's region list. |
+| /wgadd [region] [gamemode] | wgamemode.add | Adds a region to WGamemode-OG's region list. |
+| /wgremove [region] | wgamemode.remove | Removes a region from WGamemode-OG's region list. |
  
 ## Building from source
 

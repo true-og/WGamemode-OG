@@ -17,58 +17,93 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.sorenstudios.wgamemode;
+package net.trueog.plugin;
 
-import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 
 public class AddRegion implements CommandExecutor {
 
-	private WGamemode plugin;
+	private WGamemodeOG plugin;
 
-	public AddRegion(WGamemode instance) {
+	public AddRegion(WGamemodeOG instance) {
+
 		this.plugin = instance;
+
 	}
 
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		// Verify that argument length is correct
+
+		// If the argument length is correct, do this...
 		if (args.length >= 2) {
+
 			String regionName = args[0];
 			String regionGamemode = args[1];
 
-			// Verify that the gamemode given is valid
+			// Verify that the gamemode given is valid.
 			// (why does Java not have an Enum.contains method...?)
 			boolean gamemodeValid = false;
 			for (GameMode gm : GameMode.values()) {
+
 				if (gm.name().equals(regionGamemode.toUpperCase())) {
+
 					gamemodeValid = true;
+
 					break;
+
 				}
+
 			}
 
-			// Add region to config file & save
+			// Add region to the config file & save.
 			ConfigurationSection regions = this.plugin.getConfig().getConfigurationSection("regions");
-			if(regions != null && gamemodeValid) {
+			if (regions != null && gamemodeValid) {
+
 				regions.set(regionName, regionGamemode);
+
 				this.plugin.saveConfig();
 
-				sender.sendMessage(ChatColor.DARK_GREEN + 
-						"Added automatic gamemode rule for region '" + regionName + "'");
+				if (sender instanceof Player) {
+
+					Utils.trueogMessage((Player) sender, "&aAdded automatic gamemode rule for region &e\"" + regionName + "\"&a.");
+
+				}
+				else {
+
+					WGamemodeOG.getPlugin().getLogger().info("Added automatic gamemode rule for region: \"" + regionName + "\".");
+
+				}
+
 			}
-			else if(!gamemodeValid) {
-				sender.sendMessage(ChatColor.RED + "Invalid gamemode. Try again.");
+			else if (! gamemodeValid) {
+
+				if(sender instanceof Player) {
+
+					Utils.trueogMessage((Player) sender, ("&cERROR: Invalid gamemode! &6Try again."));
+
+				}
+				else {
+
+					WGamemodeOG.getPlugin().getLogger().info("ERROR: Invalid gamemode! Try again.");
+
+				}
+
 			}
 			else {
-				// Returning false means the command failed unexpectedly
+
+				// Returning false means the command failed unexpectedly.
 				return false;
+
 			}
+
 		}
 
 		return true;
+
 	}
 
 }

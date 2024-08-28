@@ -1,9 +1,9 @@
-name: WGamemode
-version: 3.0
+name: WGamemode-OG
+version: 3.1
 authors: [soren121, NotAlexNoyle]
-website: https://github.com/NotAlexNoyle/wgamemode-og
+website: https://github.com/true-og/WGamemode-OG
 depend: [WorldGuard, WorldEdit]
-main: com.sorenstudios.wgamemode.WGamemode
+main: net.trueog.plugin.WGamemodeOG
 
 commands:
     wgadd:

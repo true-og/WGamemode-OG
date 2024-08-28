@@ -2,7 +2,6 @@ plugins {
     java // Tell gradle this is a java project.
     id("io.github.goooler.shadow") version "8.1.8"
     eclipse // Import eclipse plugin for IDE integration.
-    kotlin("jvm") version "1.9.23" // Import kotlin jvm plugin for kotlin/java integration.
 }
 
 java {
@@ -77,10 +76,6 @@ tasks.withType<JavaCompile>().configureEach {
     options.compilerArgs.add("-Xlint:deprecation") // Triggers deprecation warning messages.
     options.encoding = "UTF-8"
     options.isFork = true
-}
-
-kotlin {
-    jvmToolchain(17)
 }
 
 java {

@@ -1,5 +1,5 @@
 /*
-    WGamemode 3, an automatic gamemode switching plugin for Spigot 1.18
+    WGamemode 3, an automatic gamemode switching plugin for Spigot 1.19
     Updated for https://true-og.net by NotAlexNoyle
     Copyright (C) 2015 Nicholas Narsing <soren121@sorenstudios.com>
 
@@ -17,7 +17,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.sorenstudios.wgamemode;
+package net.trueog.plugin;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,59 +39,85 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import com.sk89q.worldguard.protection.regions.RegionQuery;
 
-public class WGamemode extends JavaPlugin {
+public class WGamemodeOG extends JavaPlugin {
+
+	// Declare plugin instance.
+	private static WGamemodeOG plugin;
 
 	public Map<Player, GameMode> playersChanged;
 
 	public WorldGuardPlugin getWorldGuard() {
-		Plugin worldGuard = getServer().getPluginManager().getPlugin("WorldGuard");
 
+		Plugin worldGuard = getServer().getPluginManager().getPlugin("WorldGuard");
 		if (worldGuard instanceof WorldGuardPlugin) {
-			return (WorldGuardPlugin)worldGuard;
+
+			return (WorldGuardPlugin) worldGuard;
+
 		}
 		else {
+
 			return null;
+
 		}
+
 	}
 
 	private void validateGamemodes() {
+
 		Map<String, Object> regions = getConfig().getConfigurationSection("regions").getValues(false);
 		for (Map.Entry<String, Object> entry : regions.entrySet()) {
-			// Purposely throw fatal exception if gamemode does not exist
+
+			// Purposely throw fatal exception if gamemode does not exist.
 			try {
+
 				GameMode.valueOf(entry.getValue().toString().toUpperCase());
+
 			}
-			catch(IllegalArgumentException | NullPointerException e) {
-				throw new IllegalArgumentException(
-						"Invalid gamemode specified in config.yml for region '" + entry.getKey() + "'");
+			catch(IllegalArgumentException | NullPointerException error) {
+
+				throw new IllegalArgumentException("Invalid gamemode specified in config.yml for region '" + entry.getKey() + "'");
+
 			}
+
 		}
+
 	}
 
 	public void onEnable() {
+
+		// Set plugin instance.
+		plugin = this;
+
 		saveDefaultConfig();
 		validateGamemodes();
 
 		this.playersChanged = new HashMap<Player, GameMode>((int)(getServer().getMaxPlayers() / 0.75f + 1));
 
-		// Set event listeners
+		// Initialize event listeners.
 		getServer().getPluginManager().registerEvents(new GamemodeListener(this), this);
 		getCommand("wgadd").setExecutor(new AddRegion(this));
 		getCommand("wgremove").setExecutor(new RemoveRegion(this));
 
 		getLogger().info("Loaded successfully!");
+
 	}
 
 	public void onDisable() {
-		// Return all players to their original gamemodes to avoid potential issues
+
+		// Return all players to their original game modes to avoid potential issues.
 		for (Map.Entry<Player, GameMode> entry : this.playersChanged.entrySet()) {
+
 			Player player = entry.getKey();
 			if (player.getGameMode() != entry.getValue()) {
+
 				player.setGameMode(entry.getValue());
+
 			}
+
 		}
 
 		getLogger().info("Player gamemodes returned to original values");
+
 	}
 
 	public String currentRegion(Player player) {
@@ -103,21 +129,37 @@ public class WGamemode extends JavaPlugin {
 		ApplicableRegionSet set = query.getApplicableRegions(location);
 		List<String> playerRegions = new ArrayList<>();
 		for (ProtectedRegion region : set.getRegions()){
-				playerRegions.add(region.getId());
+
+			playerRegions.add(region.getId());
+
 		}
 
 		Set<String> managedRegions = getConfig().getConfigurationSection("regions").getKeys(false);
 
-		// Diff the two region lists
+		// Diff the two region lists.
 		playerRegions.retainAll(managedRegions);
-		// Use first result
+
+		// Use first result.
 		if(playerRegions.size() > 0) {
+
 			return playerRegions.get(0);
+
 		}
 		else {
-			// If the player is not in any WGamemode region, return null
+
+			// If the player is not in any WGamemode region, return null.
 			return null;
+
 		}
+
+	}
+
+	// Constructor so that the main class (this) can be referenced from other classes.
+	public static WGamemodeOG getPlugin() {
+
+		// Pass instance of main.
+		return plugin;
+
 	}
 
 }
