@@ -1,6 +1,6 @@
 plugins {
+    id("com.gradleup.shadow") version "8.3.6" // Import shadow API.
     java // Tell gradle this is a java project.
-    id("io.github.goooler.shadow") version "8.1.8"
     eclipse // Import eclipse plugin for IDE integration.
 }
 
@@ -24,11 +24,14 @@ tasks.named<ProcessResources>("processResources") {
     filesMatching("plugin.yml") {
         expand(props)
     }
+    from("LICENSE") { // Bundle license into .jars.
+        into("/")
+    }
 }
 
 repositories {
     mavenCentral()
-
+    gradlePluginPortal()
     maven {
         url = uri("https://repo.purpurmc.org/snapshots")  // Import Purpur API from PurpurMC's Maven repository.
     }
@@ -42,33 +45,29 @@ repositories {
 dependencies {
     compileOnly("org.purpurmc.purpur:purpur-api:1.19.4-R0.1-SNAPSHOT") // Declare purpur API version to be packaged.
     compileOnly("io.github.miniplaceholders:miniplaceholders-api:2.2.3") // Import MiniPlaceholders API.
-    compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.7") // Import WorldGuard API.
+    compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.3.0-SNAPSHOT")
+    compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.9") { // WorldGuard but without its bundled WE
+        exclude(group = "com.sk89q.worldedit")
+    }
 }
 
-tasks.withType<AbstractArchiveTask>().configureEach {
+tasks.withType<AbstractArchiveTask>().configureEach { // Ensure reproducible .jars
     isPreserveFileTimestamps = false
     isReproducibleFileOrder = true
 }
 
 tasks.shadowJar {
     exclude("io.github.miniplaceholders.*") // Exclude the MiniPlaceholders package from being shadowed.
+    archiveClassifier.set("") // Use empty string instead of null.
     minimize()
 }
 
-tasks.jar {
+tasks.build {
     dependsOn(tasks.shadowJar)
-    archiveClassifier.set("part")
-}
-
-tasks.shadowJar {
-    archiveClassifier.set("") // Use empty string instead of null
-    from("LICENSE") {
-        into("/")
-    }
 }
 
 tasks.jar {
-    dependsOn("shadowJar")
+    archiveClassifier.set("part")
 }
 
 tasks.withType<JavaCompile>().configureEach {
