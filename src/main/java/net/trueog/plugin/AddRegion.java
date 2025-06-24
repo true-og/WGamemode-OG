@@ -1,21 +1,21 @@
 /*
-    WGamemode 3, an automatic gamemode switching plugin for Spigot 1.18
-    Updated for https://true-og.net by NotAlexNoyle
-    Copyright (C) 2015 Nicholas Narsing <soren121@sorenstudios.com>
+   WGamemode 3, an automatic gamemode switching plugin for Spigot 1.18
+   Updated for https://true-og.net by NotAlexNoyle
+   Copyright (C) 2015 Nicholas Narsing <soren121@sorenstudios.com>
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as published 
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+   This program is free software: you can redistribute it and/or modify
+   it under the terms of the GNU Lesser General Public License as published
+   by the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Lesser General Public License for more details.
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU Lesser General Public License for more details.
 
-    You should have received a copy of the GNU Lesser General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+   You should have received a copy of the GNU Lesser General Public License
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 
 package net.trueog.plugin;
 
@@ -28,82 +28,72 @@ import org.bukkit.entity.Player;
 
 public class AddRegion implements CommandExecutor {
 
-	private WGamemodeOG plugin;
+    private WGamemodeOG plugin;
 
-	public AddRegion(WGamemodeOG instance) {
+    public AddRegion(WGamemodeOG instance) {
 
-		this.plugin = instance;
+        this.plugin = instance;
+    }
 
-	}
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
-	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        // If the argument length is correct, do this...
+        if (args.length >= 2) {
 
-		// If the argument length is correct, do this...
-		if (args.length >= 2) {
+            String regionName = args[0];
+            String regionGamemode = args[1];
 
-			String regionName = args[0];
-			String regionGamemode = args[1];
+            // Verify that the gamemode given is valid.
+            // (why does Java not have an Enum.contains method...?)
+            boolean gamemodeValid = false;
+            for (GameMode gm : GameMode.values()) {
 
-			// Verify that the gamemode given is valid.
-			// (why does Java not have an Enum.contains method...?)
-			boolean gamemodeValid = false;
-			for (GameMode gm : GameMode.values()) {
+                if (gm.name().equals(regionGamemode.toUpperCase())) {
 
-				if (gm.name().equals(regionGamemode.toUpperCase())) {
+                    gamemodeValid = true;
 
-					gamemodeValid = true;
+                    break;
+                }
+            }
 
-					break;
+            // Add region to the config file & save.
+            ConfigurationSection regions = this.plugin.getConfig().getConfigurationSection("regions");
+            if (regions != null && gamemodeValid) {
 
-				}
+                regions.set(regionName, regionGamemode);
 
-			}
+                this.plugin.saveConfig();
 
-			// Add region to the config file & save.
-			ConfigurationSection regions = this.plugin.getConfig().getConfigurationSection("regions");
-			if (regions != null && gamemodeValid) {
+                if (sender instanceof Player) {
 
-				regions.set(regionName, regionGamemode);
+                    Utils.trueogMessage(
+                            (Player) sender, "&aAdded automatic gamemode rule for region &e\"" + regionName + "\"&a.");
 
-				this.plugin.saveConfig();
+                } else {
 
-				if (sender instanceof Player) {
+                    WGamemodeOG.getPlugin()
+                            .getLogger()
+                            .info("Added automatic gamemode rule for region: \"" + regionName + "\".");
+                }
 
-					Utils.trueogMessage((Player) sender, "&aAdded automatic gamemode rule for region &e\"" + regionName + "\"&a.");
+            } else if (!gamemodeValid) {
 
-				}
-				else {
+                if (sender instanceof Player) {
 
-					WGamemodeOG.getPlugin().getLogger().info("Added automatic gamemode rule for region: \"" + regionName + "\".");
+                    Utils.trueogMessage((Player) sender, ("&cERROR: Invalid gamemode! &6Try again."));
 
-				}
+                } else {
 
-			}
-			else if (! gamemodeValid) {
+                    WGamemodeOG.getPlugin().getLogger().info("ERROR: Invalid gamemode! Try again.");
+                }
 
-				if(sender instanceof Player) {
+            } else {
 
-					Utils.trueogMessage((Player) sender, ("&cERROR: Invalid gamemode! &6Try again."));
+                // Returning false means the command failed unexpectedly.
+                return false;
+            }
+        }
 
-				}
-				else {
-
-					WGamemodeOG.getPlugin().getLogger().info("ERROR: Invalid gamemode! Try again.");
-
-				}
-
-			}
-			else {
-
-				// Returning false means the command failed unexpectedly.
-				return false;
-
-			}
-
-		}
-
-		return true;
-
-	}
-
+        return true;
+    }
 }

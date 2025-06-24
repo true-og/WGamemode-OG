@@ -1,6 +1,8 @@
 plugins {
+    id("java") // Tell gradle this is a java project.
+    id("java-library") // Import helper for source-based libraries.
+    id("com.diffplug.spotless") version "7.0.4" // Import auto-formatter.
     id("com.gradleup.shadow") version "8.3.6" // Import shadow API.
-    java // Tell gradle this is a java project.
     eclipse // Import eclipse plugin for IDE integration.
 }
 
@@ -10,20 +12,17 @@ java {
 }
 
 group = "com.sorenstudios.wgamemode.WGamemode" // Declare bundle identifier.
+
 version = "3.1" // Declare plugin version (will be in .jar).
+
 val apiVersion = "1.19" // Declare minecraft server target version.
 
 tasks.named<ProcessResources>("processResources") {
-    val props = mapOf(
-        "version" to version,
-        "apiVersion" to apiVersion
-    )
+    val props = mapOf("version" to version, "apiVersion" to apiVersion)
 
     inputs.properties(props) // Indicates to rerun if version changes.
 
-    filesMatching("plugin.yml") {
-        expand(props)
-    }
+    filesMatching("plugin.yml") { expand(props) }
     from("LICENSE") { // Bundle license into .jars.
         into("/")
     }
@@ -33,12 +32,11 @@ repositories {
     mavenCentral()
     gradlePluginPortal()
     maven {
-        url = uri("https://repo.purpurmc.org/snapshots")  // Import Purpur API from PurpurMC's Maven repository.
+        url = uri("https://repo.purpurmc.org/snapshots") // Import Purpur API from PurpurMC's Maven repository.
     }
-    
-    maven {
 
-        url = uri("https://maven.enginehub.org/repo/")  // Import EngineHub repository for WorldGuard API.
+    maven {
+        url = uri("https://maven.enginehub.org/repo/") // Import EngineHub repository for WorldGuard API.
     }
 }
 
@@ -63,12 +61,11 @@ tasks.shadowJar {
 }
 
 tasks.build {
+    dependsOn(tasks.spotlessApply)
     dependsOn(tasks.shadowJar)
 }
 
-tasks.jar {
-    archiveClassifier.set("part")
-}
+tasks.jar { archiveClassifier.set("part") }
 
 tasks.withType<JavaCompile>().configureEach {
     options.compilerArgs.add("-parameters")
@@ -81,5 +78,16 @@ java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(17)
         vendor = JvmVendorSpec.GRAAL_VM
+    }
+}
+
+spotless {
+    java {
+        removeUnusedImports()
+        palantirJavaFormat()
+    }
+    kotlinGradle {
+        ktfmt().kotlinlangStyle().configure { it.setMaxWidth(120) }
+        target("build.gradle.kts", "settings.gradle.kts")
     }
 }
