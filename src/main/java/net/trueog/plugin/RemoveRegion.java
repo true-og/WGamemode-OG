@@ -32,6 +32,7 @@ public class RemoveRegion implements CommandExecutor {
     public RemoveRegion(WGamemodeOG instance) {
 
         this.plugin = instance;
+
     }
 
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -52,39 +53,41 @@ public class RemoveRegion implements CommandExecutor {
 
                 if (sender instanceof Player) {
 
-                    Utils.trueogMessage(
-                            (Player) sender,
+                    Utils.trueogMessage((Player) sender,
                             "&aRemoved automatic gamemode rule for region &e\"" + regionName + "\"&a.");
 
                 } else {
 
-                    WGamemodeOG.getPlugin()
-                            .getLogger()
+                    WGamemodeOG.getPlugin().getLogger()
                             .info("Removed automatic gamemode rule for region \"" + regionName + "\".");
+
                 }
 
             } else if (!regions.isSet(regionName)) {
 
                 if (sender instanceof Player) {
 
-                    Utils.trueogMessage(
-                            (Player) sender,
+                    Utils.trueogMessage((Player) sender,
                             "&cERROR: The region \"&e" + regionName + "\" &cis not managed by WGamemode.");
 
                 } else {
 
-                    WGamemodeOG.getPlugin()
-                            .getLogger()
+                    WGamemodeOG.getPlugin().getLogger()
                             .info("ERROR: The region \"" + regionName + "\" is not managed by WGamemode.");
+
                 }
 
             } else {
 
                 // Returning false means the command failed unexpectedly.
                 return false;
+
             }
+
         }
 
         return true;
+
     }
+
 }

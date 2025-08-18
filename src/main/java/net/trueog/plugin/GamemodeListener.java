@@ -37,6 +37,7 @@ public class GamemodeListener implements Listener {
     public GamemodeListener(WGamemodeOG instance) {
 
         this.plugin = instance;
+
     }
 
     @EventHandler
@@ -48,11 +49,8 @@ public class GamemodeListener implements Listener {
         String currentRegion = this.plugin.currentRegion(player);
         if (currentRegion != null) {
 
-            GameMode regionGamemode = GameMode.valueOf(this.plugin
-                    .getConfig()
-                    .getConfigurationSection("regions")
-                    .getString(currentRegion)
-                    .toUpperCase());
+            GameMode regionGamemode = GameMode.valueOf(
+                    this.plugin.getConfig().getConfigurationSection("regions").getString(currentRegion).toUpperCase());
 
             // If their gamemode doesn't match the region's gamemode, change it!
             if (player.getGameMode() != regionGamemode) {
@@ -61,32 +59,33 @@ public class GamemodeListener implements Listener {
                 if (!this.enteredRegion.contains(player)) {
 
                     this.plugin.playersChanged.put(player, player.getGameMode());
+
                 }
 
                 player.setGameMode(regionGamemode);
 
                 if (this.plugin.getConfig().getBoolean("announceGamemodeChange")) {
 
-                    Utils.trueogMessage(
-                            player,
-                            ("&eYou are now entering... &2&l"
-                                    + regionGamemode.name().toLowerCase() + "."));
+                    Utils.trueogMessage(player,
+                            ("&eYou are now entering... &2&l" + regionGamemode.name().toLowerCase() + "."));
+
                 }
+
             }
 
             // Mark this player as having entered a managed region.
             this.enteredRegion.add(player);
 
         }
-        // If the user isn't in a region we manage, see if we've updated their status yet.
+        // If the user isn't in a region we manage, see if we've updated their status
+        // yet.
         else if (this.plugin.playersChanged.containsKey(player)) {
 
             if (this.plugin.getConfig().getBoolean("announceGamemodeChange")) {
 
-                Utils.trueogMessage(
-                        player,
-                        ("&eYou are now leaving... &2&l"
-                                + player.getGameMode().name().toLowerCase() + "."));
+                Utils.trueogMessage(player,
+                        ("&eYou are now leaving... &2&l" + player.getGameMode().name().toLowerCase() + "."));
+
             }
 
             // We haven't updated the player's status, so do that now.
@@ -94,7 +93,9 @@ public class GamemodeListener implements Listener {
 
             this.plugin.playersChanged.remove(player);
             this.enteredRegion.remove(player);
+
         }
+
     }
 
     @EventHandler
@@ -106,7 +107,9 @@ public class GamemodeListener implements Listener {
             player.setGameMode(this.plugin.playersChanged.get(player));
 
             this.plugin.playersChanged.remove(player);
+
         }
+
     }
 
     @EventHandler
@@ -118,7 +121,9 @@ public class GamemodeListener implements Listener {
             player.setGameMode(this.plugin.playersChanged.get(player));
 
             this.plugin.playersChanged.remove(player);
+
         }
+
     }
 
     @EventHandler
@@ -128,6 +133,9 @@ public class GamemodeListener implements Listener {
         if (this.plugin.getConfig().getBoolean("stopItemDrop") && this.plugin.playersChanged.containsKey(player)) {
 
             event.setCancelled(true);
+
         }
+
     }
+
 }

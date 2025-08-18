@@ -33,6 +33,7 @@ public class AddRegion implements CommandExecutor {
     public AddRegion(WGamemodeOG instance) {
 
         this.plugin = instance;
+
     }
 
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -53,7 +54,9 @@ public class AddRegion implements CommandExecutor {
                     gamemodeValid = true;
 
                     break;
+
                 }
+
             }
 
             // Add region to the config file & save.
@@ -66,14 +69,14 @@ public class AddRegion implements CommandExecutor {
 
                 if (sender instanceof Player) {
 
-                    Utils.trueogMessage(
-                            (Player) sender, "&aAdded automatic gamemode rule for region &e\"" + regionName + "\"&a.");
+                    Utils.trueogMessage((Player) sender,
+                            "&aAdded automatic gamemode rule for region &e\"" + regionName + "\"&a.");
 
                 } else {
 
-                    WGamemodeOG.getPlugin()
-                            .getLogger()
+                    WGamemodeOG.getPlugin().getLogger()
                             .info("Added automatic gamemode rule for region: \"" + regionName + "\".");
+
                 }
 
             } else if (!gamemodeValid) {
@@ -85,15 +88,20 @@ public class AddRegion implements CommandExecutor {
                 } else {
 
                     WGamemodeOG.getPlugin().getLogger().info("ERROR: Invalid gamemode! Try again.");
+
                 }
 
             } else {
 
                 // Returning false means the command failed unexpectedly.
                 return false;
+
             }
+
         }
 
         return true;
+
     }
+
 }

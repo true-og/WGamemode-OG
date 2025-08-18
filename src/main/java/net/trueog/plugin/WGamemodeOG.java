@@ -54,13 +54,14 @@ public class WGamemodeOG extends JavaPlugin {
         } else {
 
             return null;
+
         }
+
     }
 
     private void validateGamemodes() {
 
-        Map<String, Object> regions =
-                getConfig().getConfigurationSection("regions").getValues(false);
+        Map<String, Object> regions = getConfig().getConfigurationSection("regions").getValues(false);
         for (Map.Entry<String, Object> entry : regions.entrySet()) {
 
             // Purposely throw fatal exception if gamemode does not exist.
@@ -72,8 +73,11 @@ public class WGamemodeOG extends JavaPlugin {
 
                 throw new IllegalArgumentException(
                         "Invalid gamemode specified in config.yml for region '" + entry.getKey() + "'");
+
             }
+
         }
+
     }
 
     public void onEnable() {
@@ -92,6 +96,7 @@ public class WGamemodeOG extends JavaPlugin {
         getCommand("wgremove").setExecutor(new RemoveRegion(this));
 
         getLogger().info("Loaded successfully!");
+
     }
 
     public void onDisable() {
@@ -103,10 +108,13 @@ public class WGamemodeOG extends JavaPlugin {
             if (player.getGameMode() != entry.getValue()) {
 
                 player.setGameMode(entry.getValue());
+
             }
+
         }
 
         getLogger().info("Player gamemodes returned to original values");
+
     }
 
     public String currentRegion(Player player) {
@@ -120,10 +128,10 @@ public class WGamemodeOG extends JavaPlugin {
         for (ProtectedRegion region : set.getRegions()) {
 
             playerRegions.add(region.getId());
+
         }
 
-        Set<String> managedRegions =
-                getConfig().getConfigurationSection("regions").getKeys(false);
+        Set<String> managedRegions = getConfig().getConfigurationSection("regions").getKeys(false);
 
         // Diff the two region lists.
         playerRegions.retainAll(managedRegions);
@@ -137,13 +145,18 @@ public class WGamemodeOG extends JavaPlugin {
 
             // If the player is not in any WGamemode region, return null.
             return null;
+
         }
+
     }
 
-    // Constructor so that the main class (this) can be referenced from other classes.
+    // Constructor so that the main class (this) can be referenced from other
+    // classes.
     public static WGamemodeOG getPlugin() {
 
         // Pass instance of main.
         return plugin;
+
     }
+
 }

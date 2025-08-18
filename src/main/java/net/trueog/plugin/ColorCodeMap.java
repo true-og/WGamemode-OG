@@ -87,12 +87,15 @@ public class ColorCodeMap {
 
         // Reset all formatting.
         CODE_MAP.put('r', "<reset>");
+
     }
 
-    // Convert any lowercase Bukkit color / formatting code to a modern MiniMessage color / formatting code.
+    // Convert any lowercase Bukkit color / formatting code to a modern MiniMessage
+    // color / formatting code.
     public static String toMiniMessage(char legacyCode) {
 
-        // Use the Bukkit color / formatting code as a key to get the modern MiniMessage color / formatting code from
+        // Use the Bukkit color / formatting code as a key to get the modern MiniMessage
+        // color / formatting code from
         // the Hash Map.
         String miniMessageCode = CODE_MAP.get(legacyCode);
 
@@ -101,9 +104,12 @@ public class ColorCodeMap {
 
             // Cause a NullPointerExceptionError for the caller to handle.
             throw new NullPointerException();
+
         }
 
         // If the Bukkit color code is in the Hash Map, do this...
         return miniMessageCode;
+
     }
+
 }
