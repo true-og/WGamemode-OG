@@ -19,6 +19,7 @@
 // Updated for https://true-og.net by NotAlexNoyle
 package net.trueog.plugin;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.GameMode;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -30,75 +31,83 @@ import net.trueog.utilitiesog.UtilitiesOG;
 
 public class AddRegion implements CommandExecutor {
 
-    private WGamemodeOG plugin;
+    private String normalizeRegionId(String regionId) {
 
-    public AddRegion(WGamemodeOG instance) {
+        if (regionId == null) {
 
-        this.plugin = instance;
+            return null;
+
+        }
+
+        final String id = StringUtils.lowerCase(regionId);
+        if ("__global__".equals(id)) {
+
+            return "__global__";
+
+        }
+
+        return id;
 
     }
 
+    @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
         // If the argument length is correct, do this...
-        if (args.length >= 2) {
+        if (args.length < 2) {
 
-            String regionName = args[0];
-            String regionGamemode = args[1];
+            return false;
 
-            // Verify that the gamemode given is valid.
-            // (why does Java not have an Enum.contains method...?)
-            boolean gamemodeValid = false;
-            for (GameMode gm : GameMode.values()) {
+        }
 
-                if (gm.name().equals(regionGamemode.toUpperCase())) {
+        final String regionName = normalizeRegionId(args[0]);
+        final String regionGamemode = args[1];
+        boolean gamemodeValid = false;
+        for (GameMode gm : GameMode.values()) {
 
-                    gamemodeValid = true;
+            if (gm.name().equals(StringUtils.upperCase(regionGamemode))) {
 
-                    break;
-
-                }
+                gamemodeValid = true;
+                break;
 
             }
 
-            // Add region to the config file & save.
-            ConfigurationSection regions = this.plugin.getConfig().getConfigurationSection("regions");
-            if (regions != null && gamemodeValid) {
+        }
 
-                regions.set(regionName, regionGamemode);
+        final ConfigurationSection regions = WGamemodeOG.getPlugin().getConfig().getConfigurationSection("regions");
+        if (regions != null && gamemodeValid) {
 
-                this.plugin.saveConfig();
+            regions.set(regionName, StringUtils.lowerCase(regionGamemode));
+            WGamemodeOG.getPlugin().saveConfig();
+            WGamemodeOG.getPlugin().reloadRegionRules();
 
-                if (sender instanceof Player) {
+            if (sender instanceof Player) {
 
-                    UtilitiesOG.trueogMessage((Player) sender,
-                            "&aAdded automatic gamemode rule for region &e\"" + regionName + "\"&a.");
-
-                } else {
-
-                    WGamemodeOG.getPlugin().getLogger()
-                            .info("Added automatic gamemode rule for region: \"" + regionName + "\".");
-
-                }
-
-            } else if (!gamemodeValid) {
-
-                if (sender instanceof Player) {
-
-                    UtilitiesOG.trueogMessage((Player) sender, ("&cERROR: Invalid gamemode! &6Try again."));
-
-                } else {
-
-                    UtilitiesOG.logToConsole(WGamemodeOG.getPrefix(), "ERROR: Invalid gamemode! Try again.");
-
-                }
+                UtilitiesOG.trueogMessage((Player) sender,
+                        "&aAdded automatic gamemode rule for region &e\"" + regionName + "\"&a.");
 
             } else {
 
-                // Returning false means the command failed unexpectedly.
-                return false;
+                WGamemodeOG.getPlugin().getLogger()
+                        .info("Added automatic gamemode rule for region: \"" + regionName + "\".");
 
             }
+
+        } else if (!gamemodeValid) {
+
+            if (sender instanceof Player) {
+
+                UtilitiesOG.trueogMessage((Player) sender, ("&cERROR: Invalid gamemode! &6Try again."));
+
+            } else {
+
+                UtilitiesOG.logToConsole(WGamemodeOG.getPrefix(), "ERROR: Invalid gamemode! Try again.");
+
+            }
+
+        } else {
+
+            return false;
 
         }
 

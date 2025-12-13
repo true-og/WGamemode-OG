@@ -19,23 +19,21 @@
 
 package net.trueog.plugin;
 
-import java.util.ArrayList;
-
-import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-
-import net.trueog.utilitiesog.UtilitiesOG;
+import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
 public class GamemodeListener implements Listener {
 
-    private WGamemodeOG plugin;
-    private ArrayList<Player> enteredRegion = new ArrayList<Player>();
+    private final WGamemodeOG plugin;
 
     public GamemodeListener(WGamemodeOG instance) {
 
@@ -44,96 +42,79 @@ public class GamemodeListener implements Listener {
     }
 
     @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent event) {
+
+        final Player player = event.getPlayer();
+        this.plugin.getServer().getScheduler().runTask(this.plugin, () -> this.plugin.refreshPlayer(player, true));
+
+    }
+
+    @EventHandler
+    public void onPlayerTeleport(PlayerTeleportEvent event) {
+
+        final Player player = event.getPlayer();
+        this.plugin.getServer().getScheduler().runTask(this.plugin, () -> this.plugin.refreshPlayer(player, true));
+
+    }
+
+    @EventHandler
+    public void onPlayerChangedWorld(PlayerChangedWorldEvent event) {
+
+        final Player player = event.getPlayer();
+        this.plugin.refreshPlayer(player, true);
+
+    }
+
+    @EventHandler
+    public void onPlayerRespawn(PlayerRespawnEvent event) {
+
+        final Player player = event.getPlayer();
+        this.plugin.getServer().getScheduler().runTask(this.plugin, () -> this.plugin.refreshPlayer(player, true));
+
+    }
+
+    @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
 
-        Player player = event.getPlayer();
+        if (event.getTo() == null) {
 
-        // Check if the player is currently in a region we're managing.
-        String currentRegion = this.plugin.currentRegion(player);
-        if (currentRegion != null) {
-
-            GameMode regionGamemode = GameMode.valueOf(
-                    this.plugin.getConfig().getConfigurationSection("regions").getString(currentRegion).toUpperCase());
-
-            // If their gamemode doesn't match the region's gamemode, change it!
-            if (player.getGameMode() != regionGamemode) {
-
-                // Add the player to the list of mutated players.
-                if (!this.enteredRegion.contains(player)) {
-
-                    this.plugin.playersChanged.put(player, player.getGameMode());
-
-                }
-
-                player.setGameMode(regionGamemode);
-
-                if (this.plugin.getConfig().getBoolean("announceGamemodeChange")) {
-
-                    UtilitiesOG.trueogMessage(player,
-                            ("&eYou are now entering... &2&l" + regionGamemode.name().toLowerCase() + "."));
-
-                }
-
-            }
-
-            // Mark this player as having entered a managed region.
-            this.enteredRegion.add(player);
+            return;
 
         }
-        // If the user isn't in a region we manage, see if we've updated their status
-        // yet.
-        else if (this.plugin.playersChanged.containsKey(player)) {
 
-            if (this.plugin.getConfig().getBoolean("announceGamemodeChange")) {
+        if (event.getFrom().getWorld() == event.getTo().getWorld()
+                && event.getFrom().getBlockX() == event.getTo().getBlockX()
+                && event.getFrom().getBlockY() == event.getTo().getBlockY()
+                && event.getFrom().getBlockZ() == event.getTo().getBlockZ())
+        {
 
-                UtilitiesOG.trueogMessage(player,
-                        ("&eYou are now leaving... &2&l" + player.getGameMode().name().toLowerCase() + "."));
-
-            }
-
-            // We haven't updated the player's status, so do that now.
-            player.setGameMode(this.plugin.playersChanged.get(player));
-
-            this.plugin.playersChanged.remove(player);
-            this.enteredRegion.remove(player);
+            return;
 
         }
+
+        this.plugin.refreshPlayer(event.getPlayer(), true);
 
     }
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
 
-        Player player = event.getPlayer();
-        if (this.plugin.playersChanged.containsKey(player)) {
-
-            player.setGameMode(this.plugin.playersChanged.get(player));
-
-            this.plugin.playersChanged.remove(player);
-
-        }
+        this.plugin.restorePlayer(event.getPlayer());
 
     }
 
     @EventHandler
     public void onPlayerKick(PlayerKickEvent event) {
 
-        Player player = event.getPlayer();
-        if (this.plugin.playersChanged.containsKey(player)) {
-
-            player.setGameMode(this.plugin.playersChanged.get(player));
-
-            this.plugin.playersChanged.remove(player);
-
-        }
+        this.plugin.restorePlayer(event.getPlayer());
 
     }
 
     @EventHandler
     public void onPlayerItemDrop(PlayerDropItemEvent event) {
 
-        Player player = event.getPlayer();
-        if (this.plugin.getConfig().getBoolean("stopItemDrop") && this.plugin.playersChanged.containsKey(player)) {
+        final Player player = event.getPlayer();
+        if (this.plugin.getConfig().getBoolean("stopItemDrop") && this.plugin.isPlayerOverridden(player)) {
 
             event.setCancelled(true);
 

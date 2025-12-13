@@ -1,5 +1,5 @@
 regions:
-  __GLOBAL__: "survival"
+  __global__: "survival"
   spawn: "creative"
   warzone: "survival"
 stopItemDrop: true

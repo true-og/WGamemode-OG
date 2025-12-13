@@ -19,6 +19,7 @@
 
 package net.trueog.plugin;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -29,62 +30,73 @@ import net.trueog.utilitiesog.UtilitiesOG;
 
 public class RemoveRegion implements CommandExecutor {
 
-    private WGamemodeOG plugin;
+    private String findKeyIgnoreCase(ConfigurationSection section, String input) {
 
-    public RemoveRegion(WGamemodeOG instance) {
+        if (section == null || input == null) {
 
-        this.plugin = instance;
+            return null;
+
+        }
+
+        return section.getKeys(false).stream().filter(key -> StringUtils.equalsIgnoreCase(key, input)).findFirst()
+                .orElse(null);
 
     }
 
+    @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
         // If the argument length is correct, do this...
-        if (args.length >= 1) {
+        if (args.length < 1) {
 
-            String regionName = args[0];
+            return false;
 
-            ConfigurationSection regions = this.plugin.getConfig().getConfigurationSection("regions");
+        }
 
-            // Verify that region is in the config file.
-            if (regions != null && regions.isSet(regionName)) {
+        final String regionName = args[0];
+        final ConfigurationSection regions = WGamemodeOG.getPlugin().getConfig().getConfigurationSection("regions");
+        if (regions == null) {
 
-                regions.set(regionName, null);
+            return false;
 
-                this.plugin.saveConfig();
+        }
 
-                if (sender instanceof Player) {
+        final String key = findKeyIgnoreCase(regions, regionName);
+        if (key != null && regions.isSet(key)) {
 
-                    UtilitiesOG.trueogMessage((Player) sender,
-                            "&aRemoved automatic gamemode rule for region &e\"" + regionName + "\"&a.");
+            regions.set(key, null);
 
-                } else {
+            WGamemodeOG.getPlugin().saveConfig();
+            WGamemodeOG.getPlugin().reloadRegionRules();
 
-                    WGamemodeOG.getPlugin().getLogger()
-                            .info("Removed automatic gamemode rule for region \"" + regionName + "\".");
+            if (sender instanceof Player) {
 
-                }
-
-            } else if (!regions.isSet(regionName)) {
-
-                if (sender instanceof Player) {
-
-                    UtilitiesOG.trueogMessage((Player) sender,
-                            "&cERROR: The region \"&e" + regionName + "\" &cis not managed by WGamemode.");
-
-                } else {
-
-                    WGamemodeOG.getPlugin().getLogger()
-                            .info("ERROR: The region \"" + regionName + "\" is not managed by WGamemode.");
-
-                }
+                UtilitiesOG.trueogMessage((Player) sender,
+                        "&aRemoved automatic gamemode rule for region &e\"" + key + "\"&a.");
 
             } else {
 
-                // Returning false means the command failed unexpectedly.
-                return false;
+                WGamemodeOG.getPlugin().getLogger().info("Removed automatic gamemode rule for region \"" + key + "\".");
 
             }
+
+        } else if (key == null) {
+
+            if (sender instanceof Player) {
+
+                UtilitiesOG.trueogMessage((Player) sender,
+                        "&cERROR: The region \"&e" + regionName + "\" &cis not managed by WGamemode.");
+
+            } else {
+
+                WGamemodeOG.getPlugin().getLogger()
+                        .info("ERROR: The region \"" + regionName + "\" is not managed by WGamemode.");
+
+            }
+
+        } else {
+
+            return false;
 
         }
 
