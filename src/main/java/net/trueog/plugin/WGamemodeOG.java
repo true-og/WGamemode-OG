@@ -1,5 +1,5 @@
 /*
-   WGamemode 3, an automatic gamemode switching plugin for Spigot 1.19
+   WGamemode 3, an automatic gamemode switching plugin for Spigot
    Updated for https://true-og.net by NotAlexNoyle
    Copyright (C) 2015 Nicholas Narsing <soren121@sorenstudios.com>
 
@@ -15,9 +15,20 @@
 
    You should have received a copy of the GNU Lesser General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 package net.trueog.plugin;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.bukkit.GameMode;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.util.Location;
@@ -27,15 +38,6 @@ import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import com.sk89q.worldguard.protection.regions.RegionQuery;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import org.bukkit.GameMode;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.java.JavaPlugin;
 
 public class WGamemodeOG extends JavaPlugin {
 
@@ -156,6 +158,13 @@ public class WGamemodeOG extends JavaPlugin {
 
         // Pass instance of main.
         return plugin;
+
+    }
+
+    // Return plugin prefix.
+    public static String getPrefix() {
+
+        return "[WGamemode-OG]";
 
     }
 

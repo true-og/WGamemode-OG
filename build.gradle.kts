@@ -2,8 +2,8 @@
 plugins {
     id("java") // Import Java plugin.
     id("java-library") // Import Java Library plugin.
-    id("com.diffplug.spotless") version "7.0.4" // Import Spotless plugin.
-    id("com.gradleup.shadow") version "8.3.6" // Import Shadow plugin.
+    id("com.diffplug.spotless") version "8.1.0" // Import Spotless plugin.
+    id("com.gradleup.shadow") version "8.3.9" // Import Shadow plugin.
     id("checkstyle") // Import Checkstyle plugin.
     eclipse // Import Eclipse plugin.
     kotlin("jvm") version "2.1.21" // Import Kotlin JVM plugin.
@@ -27,7 +27,7 @@ kotlin { jvmToolchain(17) }
 /* ----------------------------- Metadata ------------------------------ */
 group = "net.trueog.wgamemode-og" // Declare bundle identifier.
 
-version = "3.1" // Declare plugin version (will be in .jar).
+version = "3.1.1" // Declare plugin version (will be in .jar).
 
 val apiVersion = "1.19" // Declare minecraft server target version.
 
@@ -44,7 +44,6 @@ repositories {
     mavenCentral() // Import the Maven Central Maven Repository.
     gradlePluginPortal() // Import the Gradle Plugin Portal Maven Repository.
     maven { url = uri("https://repo.purpurmc.org/snapshots") } // Import the PurpurMC Maven Repository.
-
     maven { url = uri("https://maven.enginehub.org/repo/") } // Import the EngineHub Maven Repository.
 }
 
@@ -52,6 +51,7 @@ repositories {
 dependencies {
     compileOnly("org.purpurmc.purpur:purpur-api:1.19.4-R0.1-SNAPSHOT") // Declare Purpur API version to be packaged.
     compileOnly("io.github.miniplaceholders:miniplaceholders-api:2.2.3") // Import MiniPlaceholders API.
+    compileOnlyApi(project(":libs:Utilities-OG")) // Import TrueOG Network Utilities-OG Java API (from source).
     compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.3.0-SNAPSHOT")
     compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.9") { // WorldGuard but without its bundled WE
         exclude(group = "com.sk89q.worldedit")

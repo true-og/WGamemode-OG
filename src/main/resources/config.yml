@@ -1,4 +1,6 @@
 regions:
-  exampleregion: "spawn"
+  __GLOBAL__: "survival"
+  spawn: "creative"
+  warzone: "survival"
 stopItemDrop: true
 announceGamemodeChange: true

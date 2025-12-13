@@ -1,5 +1,6 @@
 name: WGamemode-OG
-version: 3.1
+version: '${version}'
+api-version: '${apiVersion}'
 authors: [soren121, NotAlexNoyle]
 website: https://github.com/true-og/WGamemode-OG
 depend: [WorldGuard, WorldEdit]

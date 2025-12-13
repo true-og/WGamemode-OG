@@ -1,6 +1,5 @@
 /*
-   WGamemode 3, an automatic gamemode switching plugin for Spigot 1.18
-   Updated for https://true-og.net by NotAlexNoyle
+   WGamemode 3, an automatic gamemode switching plugin for Spigot
    Copyright (C) 2015 Nicholas Narsing <soren121@sorenstudios.com>
 
    This program is free software: you can redistribute it and/or modify
@@ -15,8 +14,9 @@
 
    You should have received a copy of the GNU Lesser General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
+// Updated for https://true-og.net by NotAlexNoyle
 package net.trueog.plugin;
 
 import org.bukkit.GameMode;
@@ -25,6 +25,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+
+import net.trueog.utilitiesog.UtilitiesOG;
 
 public class AddRegion implements CommandExecutor {
 
@@ -69,7 +71,7 @@ public class AddRegion implements CommandExecutor {
 
                 if (sender instanceof Player) {
 
-                    Utils.trueogMessage((Player) sender,
+                    UtilitiesOG.trueogMessage((Player) sender,
                             "&aAdded automatic gamemode rule for region &e\"" + regionName + "\"&a.");
 
                 } else {
@@ -83,11 +85,11 @@ public class AddRegion implements CommandExecutor {
 
                 if (sender instanceof Player) {
 
-                    Utils.trueogMessage((Player) sender, ("&cERROR: Invalid gamemode! &6Try again."));
+                    UtilitiesOG.trueogMessage((Player) sender, ("&cERROR: Invalid gamemode! &6Try again."));
 
                 } else {
 
-                    WGamemodeOG.getPlugin().getLogger().info("ERROR: Invalid gamemode! Try again.");
+                    UtilitiesOG.logToConsole(WGamemodeOG.getPrefix(), "ERROR: Invalid gamemode! Try again.");
 
                 }
 

@@ -1,5 +1,5 @@
 /*
-   WGamemode 3, an automatic gamemode switching plugin for Spigot 1.19
+   WGamemode 3, an automatic gamemode switching plugin for Spigot
    Updated for https://true-og.net by NotAlexNoyle
    Copyright (C) 2015 Nicholas Narsing <soren121@sorenstudios.com>
 
@@ -15,11 +15,12 @@
 
    You should have received a copy of the GNU Lesser General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 package net.trueog.plugin;
 
 import java.util.ArrayList;
+
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -28,6 +29,8 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+
+import net.trueog.utilitiesog.UtilitiesOG;
 
 public class GamemodeListener implements Listener {
 
@@ -66,7 +69,7 @@ public class GamemodeListener implements Listener {
 
                 if (this.plugin.getConfig().getBoolean("announceGamemodeChange")) {
 
-                    Utils.trueogMessage(player,
+                    UtilitiesOG.trueogMessage(player,
                             ("&eYou are now entering... &2&l" + regionGamemode.name().toLowerCase() + "."));
 
                 }
@@ -83,7 +86,7 @@ public class GamemodeListener implements Listener {
 
             if (this.plugin.getConfig().getBoolean("announceGamemodeChange")) {
 
-                Utils.trueogMessage(player,
+                UtilitiesOG.trueogMessage(player,
                         ("&eYou are now leaving... &2&l" + player.getGameMode().name().toLowerCase() + "."));
 
             }

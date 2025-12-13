@@ -1,5 +1,5 @@
 /*
-   WGamemode 3, an automatic gamemode switching plugin for Spigot 1.18
+   WGamemode 3, an automatic gamemode switching plugin for Spigot
    Updated for https://true-og.net by NotAlexNoyle
    Copyright (C) 2015 Nicholas Narsing <soren121@sorenstudios.com>
 
@@ -15,7 +15,7 @@
 
    You should have received a copy of the GNU Lesser General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 package net.trueog.plugin;
 
@@ -24,6 +24,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+
+import net.trueog.utilitiesog.UtilitiesOG;
 
 public class RemoveRegion implements CommandExecutor {
 
@@ -53,7 +55,7 @@ public class RemoveRegion implements CommandExecutor {
 
                 if (sender instanceof Player) {
 
-                    Utils.trueogMessage((Player) sender,
+                    UtilitiesOG.trueogMessage((Player) sender,
                             "&aRemoved automatic gamemode rule for region &e\"" + regionName + "\"&a.");
 
                 } else {
@@ -67,7 +69,7 @@ public class RemoveRegion implements CommandExecutor {
 
                 if (sender instanceof Player) {
 
-                    Utils.trueogMessage((Player) sender,
+                    UtilitiesOG.trueogMessage((Player) sender,
                             "&cERROR: The region \"&e" + regionName + "\" &cis not managed by WGamemode.");
 
                 } else {
