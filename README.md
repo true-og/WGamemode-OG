@@ -12,7 +12,7 @@ It was later updated by [soren121](https://github.com/soren121/wgamemode) in 201
 
 Most recently it was updated by NotAlexNoyle for [TrueOG](https://trueog.net/) in 2023.
 
-The current version (3.1) Supports Purpur 1.19.4.
+The current version (3.2) Supports Purpur 1.19.4.
 
 Licensed under the LGPLv3 (or any later version.) See LICENSE.txt for more information.
 
