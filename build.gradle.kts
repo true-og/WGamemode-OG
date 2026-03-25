@@ -53,7 +53,7 @@ dependencies {
     compileOnly("io.github.miniplaceholders:miniplaceholders-api:2.2.3") // Import MiniPlaceholders API.
     compileOnlyApi(project(":libs:Utilities-OG")) // Import TrueOG Network Utilities-OG Java API (from source).
     compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.3.0-SNAPSHOT")
-    compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.9") { // WorldGuard but without its bundled WE
+    compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.8") { // WorldGuard but without its bundled WE
         exclude(group = "com.sk89q.worldedit")
     }
 }
